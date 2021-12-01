@@ -17,6 +17,4 @@ jobs:
       with:
         node-version: 12
     - run: npm install
-    - run: |
-      export cookie="${{secrets.JUEJIN_COOKIE}}"
-      npm run juejin
+    - run: export cookie="${{secrets.JUEJIN_COOKIE}}" && npm run juejin
