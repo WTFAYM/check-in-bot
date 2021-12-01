@@ -1,0 +1,23 @@
+{
+  "name": "check-in-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "juejin": "node src/juejin.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kohaiy/check-in-bot.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kohaiy/check-in-bot/issues"
+  },
+  "homepage": "https://github.com/kohaiy/check-in-bot#readme",
+  "dependencies": {
+    "axios": "^0.24.0"
+  }
+}
