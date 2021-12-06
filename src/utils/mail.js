@@ -23,8 +23,7 @@ const sendMail = async (title, content) => {
         subject: title,
         text: content,
     });
-
-    console.log(info);
+    return info;
 };
 
 module.exports = {
