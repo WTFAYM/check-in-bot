@@ -16,5 +16,16 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: 12
-    - run: npm install
-    - run: export cookie="${{secrets.JUEJIN_COOKIE}}" && npm run juejin
+    - name: Install dependencies
+      run: npm install
+    - name: Set Env config
+      run: |
+        echo "JUEJIN_COOKIE=${{secrets.JUEJIN_COOKIE}}" >> .env
+        echo "BILI_COOKIE=${{secrets.BILI_COOKIE}}" >> .env
+        echo "MAIL_HOST=${{secrets.MAIL_HOST}}" >> .env
+        echo "MAIL_PORT=${{secrets.MAIL_PORT}}" >> .env
+        echo "MAIL_USER=${{secrets.MAIL_USER}}" >> .env
+        echo "MAIL_PASS=${{secrets.MAIL_PASS}}" >> .env
+        echo "MAIL_TO=${{secrets.MAIL_TO}}" >> .env
+    - run: npm run juejin
+    - run: npm run bili-live

@@ -1,5 +1,7 @@
+require('dotenv').config();
 const { Axios } = require("axios");
-const cookie = process.env.cookie;
+const { sendMail } = require('./utils/mail');
+const cookie = process.env.JUEJIN_COOKIE;
 
 const axios = new Axios({
   headers: {
@@ -26,9 +28,12 @@ const drawFn = async () => {
   );
 
   if (draw.err_no !== 0) return console.warn("免费抽奖失败！");
-  [3, 4].includes(draw.data.lottery_type)
-    ? console.log(`恭喜抽到：${draw.data.lottery_name}`)
-    : console.log(`恭喜抽到：${draw.data.lottery_name}`);
+  if ([1, 2].includes(draw.data.lottery_type)) {
+    console.log(`恭喜抽到：${draw.data.lottery_name}`)
+  } else {
+    sendMail('[中] check-in bot', `juejin 恭喜抽到：${draw.data.lottery_name}`);
+    console.log(`恭喜抽到：${draw.data.lottery_name}`)
+  }
 };
 
 const checkIn = async () => {
@@ -50,11 +55,13 @@ const checkIn = async () => {
   );
 
   if (check_in.err_no !== 0) return console.warn("签到失败！");
+  sendMail('[签] check-in bot', `签到成功！当前积分；${check_in.data.sum_point}`);
   console.log(`签到成功！当前积分；${check_in.data.sum_point}`);
   drawFn();
 };
 
 if (!cookie) {
+  sendMail("[FAIL] check-in bot", "juejin 未设置环境变量 cookie");
   return console.error("未设置环境变量 cookie");
 }
 checkIn();
