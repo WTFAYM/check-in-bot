@@ -1,4 +1,4 @@
-name: Juejin Auto Check in
+name: Auto Check in
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
   - cron: "0 0 * * *"
 
 jobs:
-  juejin-check-in:
+  check-in:
 
     runs-on: ubuntu-latest
 
@@ -27,5 +27,7 @@ jobs:
         echo "MAIL_USER=${{secrets.MAIL_USER}}" >> .env
         echo "MAIL_PASS=${{secrets.MAIL_PASS}}" >> .env
         echo "MAIL_TO=${{secrets.MAIL_TO}}" >> .env
-    - run: npm run juejin
-    - run: npm run bili-live
+    - name: Check-in Juejin
+      run: npm run juejin
+    - name: Check-in Bili-live
+      run: npm run bili-live
