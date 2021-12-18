@@ -13,26 +13,33 @@ axios.interceptors.response.use((res) => {
   return JSON.parse(res.data);
 });
 
+const messages = [];
+
 const drawFn = async () => {
   // 查询今日是否有免费抽奖机会
   const today = await axios.get(
     "https://api.juejin.cn/growth_api/v1/lottery_config/get"
   );
 
-  if (today.err_no !== 0) return console.warn("免费抽奖失败！");
-  if (today.data.free_count === 0) return console.log("今日已经免费抽奖！");
+  if (today.err_no !== 0) {
+    return messages.push("免费抽奖失败！");
+  }
+  if (today.data.free_count === 0) {
+    return messages.push("今日已经免费抽奖！");
+  }
 
   // 免费抽奖
   const draw = await axios.post(
     "https://api.juejin.cn/growth_api/v1/lottery/draw"
   );
 
-  if (draw.err_no !== 0) return console.warn("免费抽奖失败！");
+  if (draw.err_no !== 0) {
+    return messages.push("免费抽奖失败！");
+  }
   if ([1, 2].includes(draw.data.lottery_type)) {
-    console.log(`恭喜抽到：${draw.data.lottery_name}`)
+    messages.push(`恭喜抽到：${draw.data.lottery_name}`);
   } else {
-    sendMail('[中] check-in bot', `juejin 恭喜抽到：${draw.data.lottery_name}`);
-    console.log(`恭喜抽到：${draw.data.lottery_name}`)
+    messages.push(`恭喜抽到：${draw.data.lottery_name}`);
   }
 };
 
@@ -41,12 +48,12 @@ const checkIn = async () => {
   const today_status = await axios.get(
     "https://api.juejin.cn/growth_api/v1/get_today_status"
   );
-  if (today_status.err_no !== 0)
-    return console.warn("签到失败！" + today_status.err_msg);
+  if (today_status.err_no !== 0) {
+    return messages.push("签到失败！" + today_status.err_msg);
+  }
   if (today_status.data) {
-    console.log("今日已经签到！");
-    drawFn();
-    return;
+    messages.push("今日已经签到！");
+    return drawFn();
   }
 
   // 签到
@@ -54,14 +61,20 @@ const checkIn = async () => {
     "https://api.juejin.cn/growth_api/v1/check_in"
   );
 
-  if (check_in.err_no !== 0) return console.warn("签到失败！");
-  sendMail('[签] check-in bot', `签到成功！当前积分；${check_in.data.sum_point}`);
-  console.log(`签到成功！当前积分；${check_in.data.sum_point}`);
-  drawFn();
+  if (check_in.err_no !== 0) {
+    return messages.push("签到失败！");
+  }
+  messages.push(`签到成功！当前积分；${check_in.data.sum_point}`);
+  return drawFn();
 };
 
 if (!cookie) {
   sendMail("[FAIL] check-in bot", "juejin 未设置环境变量 cookie");
   return console.error("未设置环境变量 cookie");
 }
-checkIn();
+checkIn().then(() => {
+  console.log(messages.join(" \n"));
+  if (messages.length) {
+    sendMail("自动签到【掘金】", messages.join(" \n"));
+  }
+});

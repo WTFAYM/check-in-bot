@@ -16,11 +16,11 @@ axios.interceptors.response.use((res) => {
 const checkIn = async () => {
   const res = await axios.get('https://api.live.bilibili.com/xlive/web-ucenter/v1/sign/DoSign');
   if (!res || res.code) {
-    sendMail('[FAIL] check-in bot bili', res && res.message);
+    sendMail('自动签到【bili live】', res && res.message);
     return console.error(res && res.message);
   }
   const { hadSignDays, allDays, text, specialText } = res.data || {};
-  sendMail('[签] check-in bot bili', `签到成功，本月（${hadSignDays}/${allDays}），${text}，${specialText}`);
+  sendMail('自动签到【bili live】', `签到成功，本月（${hadSignDays}/${allDays}），${text}，${specialText}`);
   console.log(`签到成功，本月（${hadSignDays}/${allDays}），${text}，${specialText}`);
 };
 
