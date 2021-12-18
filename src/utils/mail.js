@@ -7,6 +7,9 @@ const pass = process.env.MAIL_PASS;
 const to = process.env.MAIL_TO;
 
 const sendMail = async (title, content) => {
+    if (!(host && port && user && pass && to)) {
+        return;
+    }
     let transporter = nodemailer.createTransport({
         host,
         port,
