@@ -43,6 +43,24 @@ const drawFn = async () => {
   }
 };
 
+const getLucky = async () => {
+  try {
+    const res = await axios.post(
+      "https://api.juejin.cn/growth_api/v1/lottery_history/global_big",
+      JSON.stringify({ "page_no": 2, "page_size": 5 }),
+    );
+    const history_id = res.data.lotteries[0].history_id;
+    const res2 = await axios.post(
+      "https://api.juejin.cn/growth_api/v1/lottery_lucky/dip_lucky",
+      JSON.stringify({ "lottery_history_id": history_id }),
+    );
+    const { total_value, dip_value, has_dip } = res2.data;
+    messages.push((has_dip ? '[复]' : '') + "粘到了：" + dip_value + ' 点幸运值，共 ' + total_value + '/6000 点幸运值');
+  } catch (e) {
+    messages.push("粘幸运值报错：" + e.messages);
+  }
+};
+
 const checkIn = async () => {
   // 查询今日是否已经签到
   const today_status = await axios.get(
@@ -65,14 +83,15 @@ const checkIn = async () => {
     return messages.push("签到失败！");
   }
   messages.push(`签到成功！当前积分；${check_in.data.sum_point}`);
-  return drawFn();
+  await drawFn();
 };
 
 if (!cookie) {
   sendMail("[FAIL] check-in bot", "juejin 未设置环境变量 cookie");
   return console.error("未设置环境变量 cookie");
 }
-checkIn().then(() => {
+checkIn().then(async () => {
+  await getLucky();
   console.log(messages.join(" \n"));
   if (messages.length) {
     sendMail("自动签到【掘金】", messages.join(" \n"));
