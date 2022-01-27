@@ -45,15 +45,15 @@ const drawFn = async () => {
 
 const getLucky = async () => {
   try {
-    const res = await axios.post(
-      "https://api.juejin.cn/growth_api/v1/lottery_history/global_big",
-      JSON.stringify({ "page_no": 2, "page_size": 5 }),
-    );
-    console.log(res);
-    const history_id = res.data.lotteries[0].history_id;
+//     const res = await axios.post(
+//       "https://api.juejin.cn/growth_api/v1/lottery_history/global_big",
+//       JSON.stringify({ "page_no": 2, "page_size": 5 }),
+//     );
+//     console.log(res);
+//     const history_id = res.data.lotteries[0].history_id;
     const res2 = await axios.post(
       "https://api.juejin.cn/growth_api/v1/lottery_lucky/dip_lucky?aid=2608",
-      JSON.stringify({ "lottery_history_id": history_id }),
+//       JSON.stringify({ "lottery_history_id": history_id }),
     );
     console.log(res2.config);
     console.log(res2.data);
