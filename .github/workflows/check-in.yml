@@ -27,7 +27,7 @@ jobs:
         echo "MAIL_USER=${{secrets.MAIL_USER}}" >> .env
         echo "MAIL_PASS=${{secrets.MAIL_PASS}}" >> .env
         echo "MAIL_TO=${{secrets.MAIL_TO}}" >> .env
-    - name: Check-in Juejin
-      run: npm run juejin
+    # - name: Check-in Juejin
+    #  run: npm run juejin
     - name: Check-in Bili-live
       run: npm run bili-live
